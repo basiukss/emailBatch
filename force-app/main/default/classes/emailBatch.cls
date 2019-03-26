@@ -1,17 +1,51 @@
 global class emailBatch implements Database.Batchable<sObject> {
     global List<Account> start(Database.BatchableContext bc) {
         System.debug('BATCH START');
-        return [SELECT Id, Name from Account];
+        return [SELECT Id, Name from Account LIMIT 2];
     }
     global void execute(Database.BatchableContext bc, List<Account> accounts){
         System.debug('BATCH EXECUTE');
         List<String> messages = new List<String>();
         for(Account acc : accounts){            
-            String msg = generateContactsPDF(acc);
-            System.debug(msg);
-            messages.add(msg);
+            String pdf = generateContactsPDF(acc);
+            System.debug(pdf);
+            messages.add(pdf);
+
+            // Attachment
+            // Attachment attachmentPDF = new Attachment();
+            // attachmentPdf.parentId = a.id;
+            // attachmentPdf.name = a.name + '.pdf';
+            // attachmentPdf.body = blob.toPDF(pdf);
+
+            // Create the email attachment  
+            Messaging.EmailFileAttachment efa = new Messaging.EmailFileAttachment();
+            efa.setFileName(acc.Name + '.pdf');
+	        efa.setBody(blob.toPDF(pdf));
+
+            // Create the email
+            Messaging.SingleEmailMessage message = new Messaging.SingleEmailMessage();
+            message.toAddresses = new String[] { 'cftokm@gmail.com' };        
+            message.setSubject('sf test mail');         
+            message.setHtmlBody('Hello,' + acc.Name + '<br/><br/>Your contacts');
+            message.setFileAttachments(new Messaging.EmailFileAttachment[]{efa});
+
+            // Send message            
+            try{
+                Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { message });            
+                for(Messaging.SendEmailResult rr : results){
+                    System.debug('Email result ' + rr.IsSuccess());
+                    if(!rr.IsSuccess())
+                    {
+                        Messaging.SendEmailError[] errArr = rr.getErrors();   
+                        System.debug(errArr[0].getTargetObjectId()); 
+                    }
+                }             
+            }catch(exception e){
+                System.debug(e.getMessage());
+            }            
         }
     }    
+
     global void finish(Database.BatchableContext bc){
         System.debug('BATCH FINISH');
     }    

@@ -1,16 +1,15 @@
 <template>
-    <div>LWC</div>
-    <div>
-        <lightning-button label="runBatch" onclick={handleRunBatch} class="slds-m-left_x-small"></lightning-button>
-    </div>
-
-    <template if:true={batchId}>
-        <span>batchId:{batchId}</span> 
-        <div>       
-            <lightning-button label="getStatus" onclick={handleGetStatus} class="slds-m-left_x-small"></lightning-button>
+        <div>
+            <lightning-button label="runBatch" onclick={handleRunBatch} class="slds-m-left_x-small"></lightning-button>
         </div>
-        <template if:true={batchStatus}>
-            {batchStatus}
+
+        <template if:true={batchId}>
+            <span>batchId:{batchId}</span> 
+            <div>       
+                <lightning-button label="getStatus" onclick={handleGetStatus} class="slds-m-left_x-small"></lightning-button>
+            </div>
+            <template if:true={batchStatus}>       
+                <span>batchStatus:{batchStatus}</span> 
+            </template>       
         </template>
-    </template>
 </template>
