@@ -1,0 +1,17 @@
+<apex:page controller="emailConfig" renderAs="pdf">
+    <h2>
+        <apex:outputText value="{! selectedAccount }" />
+    </h2>
+    <p>Your Contacts:</p>    
+    <apex:repeat value="{!contacts}" var="contact" id="theRepeat">
+        <table border=>
+            <tr>
+                <td><apex:outputField value="{!contact.FirstName}" /></td>
+                <td><apex:outputField value="{!contact.LastName}" /></td>
+                <td><apex:outputField value="{!contact.Title}" /></td>
+                <td><apex:outputField value="{!contact.Email}" /></td>
+                <td><apex:outputField value="{!contact.MalingCity}" /></td>
+            </tr>
+        </table>
+    </apex:repeat>
+</apex:page>
