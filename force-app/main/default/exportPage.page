@@ -4,13 +4,14 @@
     </h2>
     <p>Your Contacts:</p>    
     <apex:repeat value="{!contacts}" var="contact" id="theRepeat">
-        <table border=>
+        <table>
             <tr>
                 <td><apex:outputField value="{!contact.FirstName}" /></td>
                 <td><apex:outputField value="{!contact.LastName}" /></td>
                 <td><apex:outputField value="{!contact.Title}" /></td>
                 <td><apex:outputField value="{!contact.Email}" /></td>
-                <td><apex:outputField value="{!contact.MalingCity}" /></td>
+                <td><apex:outputField value="{!contact.Phone}" /></td>
+                <td><apex:outputField value="{!contact.MailingCity}" /></td>
             </tr>
         </table>
     </apex:repeat>

@@ -1,8 +1,16 @@
 <template>
     <div>LWC</div>
-    <lightning-button label="getPDF" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
-    <template if:true={fieldSet}>
-        <span>fieldSet:</span>
-        {fieldSet}
+    <div>
+        <lightning-button label="runBatch" onclick={handleRunBatch} class="slds-m-left_x-small"></lightning-button>
+    </div>
+
+    <template if:true={batchId}>
+        <span>batchId:{batchId}</span> 
+        <div>       
+            <lightning-button label="getStatus" onclick={handleGetStatus} class="slds-m-left_x-small"></lightning-button>
+        </div>
+        <template if:true={batchStatus}>
+            {batchStatus}
+        </template>
     </template>
 </template>
