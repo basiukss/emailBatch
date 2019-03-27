@@ -30,19 +30,19 @@ global class emailBatch implements Database.Batchable<sObject> {
             message.setFileAttachments(new Messaging.EmailFileAttachment[]{efa});
 
             // Send message            
-            try{
-                Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { message });            
-                for(Messaging.SendEmailResult rr : results){
-                    System.debug('Email result ' + rr.IsSuccess());
-                    if(!rr.IsSuccess())
-                    {
-                        Messaging.SendEmailError[] errArr = rr.getErrors();   
-                        System.debug(errArr[0].getTargetObjectId()); 
-                    }
-                }             
-            }catch(exception e){
-                System.debug(e.getMessage());
-            }            
+            // try{
+            //     Messaging.SendEmailResult[] results = Messaging.sendEmail(new Messaging.SingleEmailMessage[] { message });            
+            //     for(Messaging.SendEmailResult rr : results){
+            //         System.debug('Email result ' + rr.IsSuccess());
+            //         if(!rr.IsSuccess())
+            //         {
+            //             Messaging.SendEmailError[] errArr = rr.getErrors();   
+            //             System.debug(errArr[0].getTargetObjectId()); 
+            //         }
+            //     }             
+            // }catch(exception e){
+            //     System.debug(e.getMessage());
+            // }            
         }
     }    
 

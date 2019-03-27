@@ -1,6 +1,8 @@
 <template>
         <div>
             <lightning-button label="runBatch" onclick={handleRunBatch} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button label="runScheduleBatch" onclick={handleRunScheduleBatch} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button label="getStatus" onclick={handleGetBatchStatus} class="slds-m-left_x-small"></lightning-button>
         </div>
 
         <template if:true={batchId}>
@@ -8,8 +10,34 @@
             <div>       
                 <lightning-button label="getStatus" onclick={handleGetStatus} class="slds-m-left_x-small"></lightning-button>
             </div>
-            <template if:true={batchStatus}>       
-                <span>batchStatus:{batchStatus}</span> 
+        </template>
+        <template if:true={batchStatus}>       
+            <span>batchStatus:</span>
+            <ul>
+                <template for:each={batchStatus} for:item="item">
+                        <li key={item} >
+                            <span>{item.Id} </span>
+                            <span>{item.Status} </span>
+                            <span>{item.CreatedDate} </span>
+                            <span>{item.CompletedDate} </span>
+                        </li> 
+                </template>
+            </ul>
+        </template>       
+
+        <template if:true={cronId}>
+            <span>cronId:{cronId}</span> 
+            <div>       
+                <lightning-button label="getCronTrigger" onclick={handleGetCronStatus} class="slds-m-left_x-small"></lightning-button>
+            </div>
+            <template if:true={cronTrigger}>       
+                <span>cronTrigger:{cronTrigger}</span> 
             </template>       
+        </template>
+
+        <template if:true={error}>
+            <div>       
+                {error}
+            </div>
         </template>
 </template>
