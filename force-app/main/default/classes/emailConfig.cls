@@ -1,4 +1,6 @@
 public with sharing class emailConfig {
+    private static String settings_name='email_report';
+
     @AuraEnabled
     public static string runBatch(){
         emailBatch emailReport = new emailBatch();
@@ -43,24 +45,70 @@ public with sharing class emailConfig {
         } else return cronId;
     }
 
-    @AuraEnabled
-    public static Boolean getState(){
-        System.debug('getState');
-        email_report__c er = email_report__c.getInstance();
-        System.debug(er.state__c);
-        return er.state__c;
+
+    // Batch custom settings
+    @AuraEnabled (cacheable=true)
+    public static String getSettings(){        
+        batch_email_report__c er = batch_email_report__c.getInstance(settings_name);
+        System.debug('getSettings' + er);
+        return JSON.serialize(er);
     }
 
     @AuraEnabled
-    public static string getTime(){
-        System.debug('getTime');
-        email_report__c er = email_report__c.getInstance();
-        return String.valueOf(er.time__c);
-    }
+    public static String setSettings(String settings){
+        System.debug('setSettings ' + settings);
+        batch_email_report__c er = batch_email_report__c.getInstance(settings_name);
+        batch_email_report__c erNew = (batch_email_report__c) JSON.deserialize(settings, batch_email_report__c.class);
+        er.state__c = erNew.state__c;
+        er.time__c = erNew.time__c;
+        upsert er;
+        return JSON.serialize(batch_email_report__c.getInstance(settings_name));
+    }      
 
-    @AuraEnabled
-    public static void setStartTime(String newTime){
-        System.debug('Set time to: ' + newTime);
-    }
-    
+    // @AuraEnabled
+    // public static void setState(Boolean state){
+    //     System.debug('setState: ' + state);
+    //     batch_email_report__c er = batch_email_report__c.getInstance(settings_name);
+    //     er.state__c = state;        
+    //     upsert er;
+    //     System.debug('new state: ' + batch_email_report__c.getInstance(settings_name).state__c);
+    // }
+
+    // @AuraEnabled
+    // public static void setTime(Integer newTime){
+    //     System.debug('setTime: ' + newTime);
+    //     batch_email_report__c er = batch_email_report__c.getInstance(settings_name);
+    //     er.time__c = newTime;        
+    //     upsert er;
+    //     System.debug('new state: ' + batch_email_report__c.getInstance(settings_name).time__c);
+    // }
+
+    // @AuraEnabled (cacheable=true)
+    // public static Boolean getState(){        
+    //     email_report__c er = email_report__c.getOrgDefaults();
+    //     System.debug('getState: ' + er.state__c);
+    //     return er.state__c;
+    // }
+
+    // @AuraEnabled
+    // public static void setState(Boolean state){
+    //     System.debug('setState: ' + state);
+    //     email_report__c er = email_report__c.getOrgDefaults();
+    //     er.state__c = state;        
+    //     upsert er;
+    //     System.debug(email_report__c.getOrgDefaults().state__c);
+    // }
+
+    // @AuraEnabled (cacheable=true)
+    // public static String getTime(){        
+    //     email_report__c er = email_report__c.getOrgDefaults();
+    //     System.debug('getTime: ' + er.time__c);
+    //     return String.valueOf(er.time__c);
+    // }
+
+    // @AuraEnabled
+    // public static void setStartTime(String newTime){
+    //     System.debug('Set time to: ' + newTime);
+    // }
+   
 }

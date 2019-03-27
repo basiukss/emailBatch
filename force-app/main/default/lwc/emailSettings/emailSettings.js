@@ -1,77 +1,44 @@
 import { LightningElement, track, wire } from 'lwc';
-import getBatchStatus from '@salesforce/apex/emailConfig.getBatchStatus';
-import getState from '@salesforce/apex/emailConfig.getState';
-import getTime from '@salesforce/apex/emailConfig.getTime';
-import setTime from '@salesforce/apex/emailConfig.setTime';
+import getSettings from '@salesforce/apex/emailConfig.getSettings';
+import setSettings from '@salesforce/apex/emailConfig.setSettings';
 
 export default class EmailSettings extends LightningElement {
+    @track settings = {};    
     @track state;
     @track time;
     @track error;
 
-    handleState(event){
-        console.log(`handleState`);
+    @wire (getSettings)
+    wiredGetSettings({ data, error }){
+        console.log('wired getSettings');
+        if (data) {
+            console.log(data);
+            this.settings = JSON.parse(data);
+            this.state = this.settings.state__c;
+            this.time = this.settings.time__c;
+        } else if (error) {
+            console.log('wired getSettings error');
+            this.error = error;
+        }        
+    }
+
+    handleChangeState(event){
         this.state = event.target.checked;
-    }
+    } 
 
-    handleGetStatus() {
-        console.log('getStatus');
-    }
+    handleChangeTime(event){
+        this.time = event.target.value;
+    } 
 
-
-
-    @wire(getState, {})
-    getState({ error, data }) {
-        if (data) {
-            console.log('getState');
-            console.log(data);
-            this.state = data;
-        } else if (error) {
-            this.error = error;
-        }
-    }
-
-    @wire(getTime)
-    getTime({ error, data }) {
-        if (data) {
-            console.log('getTime');
-            console.log(data);            
-            this.time = data;
-        } else if (error) {
-            this.error = error;
-        }
-    }
-
-    handleKeyChange(event){
-        this.time = event.target.value;    
-    }
-
-    handleSetTime(){
-        console.log('set time: ' + this.time);
-        setTime({newTime : this.time})
+    handleSetSettings(){
+        console.log(`set settings`);
+        setSettings({settings : JSON.stringify({state__c : this.state, time__c : this.time})})
         .then(data => {                
-            console.log(data);
+            console.log(data);                
         })
         .catch(error => {
-            console.log('setStartTime error');
+            console.log('setSettings error');
             this.error = error;
         });
-    }
-
-    renderedCallback() {
-        console.log('rendered');
-        getTime();
-    }
-
-    handleGetBatchStatus() {
-        console.log('getBatchStatus');
-        getBatchStatus()
-            .then(data => {   
-                this.batchStatus = JSON.parse(data);
-            })
-            .catch(error => {
-                console.log('getBatchStatus error');
-                this.error = error;
-            });
     }
 }
