@@ -42,4 +42,25 @@ public with sharing class emailConfig {
             return JSON.serialize(ct);
         } else return cronId;
     }
+
+    @AuraEnabled
+    public static Boolean getState(){
+        System.debug('getState');
+        email_report__c er = email_report__c.getInstance();
+        System.debug(er.state__c);
+        return er.state__c;
+    }
+
+    @AuraEnabled
+    public static string getTime(){
+        System.debug('getTime');
+        email_report__c er = email_report__c.getInstance();
+        return String.valueOf(er.time__c);
+    }
+
+    @AuraEnabled
+    public static void setStartTime(String newTime){
+        System.debug('Set time to: ' + newTime);
+    }
+    
 }

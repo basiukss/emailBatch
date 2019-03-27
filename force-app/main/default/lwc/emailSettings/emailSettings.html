@@ -1,0 +1,13 @@
+<template>
+    <lightning-card  title="Custom settings">
+        <lightning-input type="checkbox"
+                     label="Email report Batch On/Off"        
+                     onchange={handleState}
+                     checked={state}>
+        </lightning-input>
+        <lightning-input type="number" label="time" required value={time} maxlength="2" onchange={handleKeyChange}></lightning-input>
+        <lightning-button label="Set time" onclick={handleSetTime}></lightning-button>
+        <lightning-button label="Get Time" onclick={getTime} class="slds-m-left_x-small"></lightning-button>
+        <lightning-button label="getStatus" onclick={handleGetBatchStatus} class="slds-m-left_x-small"></lightning-button>
+    </lightning-card>
+</template>

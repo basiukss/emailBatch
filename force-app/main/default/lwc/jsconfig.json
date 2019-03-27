@@ -5,6 +5,9 @@
         "paths": {
             "c/email-batch": [
                 "emailBatch/emailBatch.js"
+            ],
+            "c/email-settings": [
+                "emailSettings/emailSettings.js"
             ]
         }
     },
