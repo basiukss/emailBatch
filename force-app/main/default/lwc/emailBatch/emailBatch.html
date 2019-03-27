@@ -6,7 +6,7 @@
         </div>
 
         <template if:true={batchId}>
-            <span>batchId:{batchId}</span> 
+            <span>batchId: {batchId}</span> 
             <div>       
                 <lightning-button label="getStatus" onclick={handleGetStatus} class="slds-m-left_x-small"></lightning-button>
             </div>
@@ -16,10 +16,10 @@
             <ul>
                 <template for:each={batchStatus} for:item="item">
                         <li key={item} >
+                            <span>{item.JobType} </span>
                             <span>{item.Id} </span>
                             <span>{item.Status} </span>
                             <span>{item.CreatedDate} </span>
-                            <span>{item.CompletedDate} </span>
                         </li> 
                 </template>
             </ul>
@@ -31,7 +31,7 @@
                 <lightning-button label="getCronTrigger" onclick={handleGetCronStatus} class="slds-m-left_x-small"></lightning-button>
             </div>
             <template if:true={cronTrigger}>       
-                <span>cronTrigger:{cronTrigger}</span> 
+                <span>cronTrigger: {cronTrigger}</span> 
             </template>       
         </template>
 

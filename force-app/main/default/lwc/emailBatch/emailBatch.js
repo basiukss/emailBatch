@@ -1,4 +1,4 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, track } from 'lwc';
 import runBatch from '@salesforce/apex/emailConfig.runBatch';
 import getStatus from '@salesforce/apex/emailConfig.getStatus';
 import getBatchStatus from '@salesforce/apex/emailConfig.getBatchStatus';
@@ -45,15 +45,6 @@ export default class EmailBatch extends LightningElement {
         console.log('getBatchStatus');
         getBatchStatus()
             .then(data => {   
-                console.log(data);
-                let result = JSON.parse(data);
-                let msg ='';
-                for(let i = 0; i< result.length; i++){
-                        msg += '\n Status: ' + result[i].Status +
-                                ' CreatedDate: ' + result[i].CreatedDate +
-                                ' CompletedDate: ' + result[i].CompletedDate;
-                }
-                console.log(msg);
                 this.batchStatus = JSON.parse(data);
             })
             .catch(error => {
@@ -80,7 +71,7 @@ export default class EmailBatch extends LightningElement {
         getCronStatus({cronId : this.cronId})
             .then(data => {                
                 console.log(data);                
-                this.cronTrigger = data;
+                this.cronTrigger = JSON.parse(data).State;
             })
             .catch(error => {
                 console.log('getCronStatus error');

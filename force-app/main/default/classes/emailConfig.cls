@@ -22,7 +22,7 @@ public with sharing class emailConfig {
     @AuraEnabled
     public static string getBatchStatus(){
         String name = 'emailBatch';
-        return JSON.serialize([SELECT Id, CreatedDate, CompletedDate, Status, NumberOfErrors, JobItemsProcessed, TotalJobItems FROM AsyncApexJob WHERE ApexClassId IN (Select Id FROM ApexClass WHERE Name =: name)]);
+        return JSON.serialize([SELECT Id, CreatedDate, CompletedDate, Status, JobType FROM AsyncApexJob WHERE ApexClassId IN (Select Id FROM ApexClass WHERE Name =: name) ORDER BY CreatedDate ASC]);
     }
 
     @AuraEnabled
@@ -36,7 +36,7 @@ public with sharing class emailConfig {
     public static string getCronStatus(String cronId){
         System.debug('Get CronTrigger id:' + cronId);
         if(cronId != null){
-            CronTrigger ct = [SELECT Id, TimesTriggered, NextFireTime
+            CronTrigger ct = [SELECT Id,CronJobDetail.Name,NextFireTime,PreviousFireTime,State,StartTime,EndTime,CronExpression
                             FROM CronTrigger WHERE Id = :cronId];
             System.debug('Next fire time: ' + ct.NextFireTime); 
             return JSON.serialize(ct);
