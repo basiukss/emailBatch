@@ -24,7 +24,7 @@ public with sharing class emailConfig {
     @AuraEnabled
     public static string getBatchStatus(){
         String name = 'emailBatch';
-        return JSON.serialize([SELECT Id, CreatedDate, CompletedDate, Status, JobType FROM AsyncApexJob WHERE ApexClassId IN (Select Id FROM ApexClass WHERE Name =: name) ORDER BY CreatedDate ASC]);
+        return JSON.serialize([SELECT Id, CreatedDate, CompletedDate, Status, JobType FROM AsyncApexJob WHERE ApexClassId IN (Select Id FROM ApexClass WHERE Name =: name) AND CreatedDate > YESTERDAY ORDER BY CreatedDate ASC]);
     }
 
     @AuraEnabled
@@ -38,13 +38,13 @@ public with sharing class emailConfig {
     public static string getCronStatus(String cronId){
         System.debug('Get CronTrigger id:' + cronId);
         if(cronId != null){
-            CronTrigger ct = [SELECT Id,CronJobDetail.Name,NextFireTime,PreviousFireTime,State,StartTime,EndTime,CronExpression
-                            FROM CronTrigger WHERE Id = :cronId];
-            System.debug('Next fire time: ' + ct.NextFireTime); 
+            CronTrigger ct = [SELECT Id, CronJobDetail.Id, CronJobDetail.Name, CronJobDetail.JobType, NextFireTime, PreviousFireTime,State,StartTime,EndTime,CronExpression
+                            FROM CronTrigger WHERE Id = :cronId ORDER BY CreatedDate DESC];   
+            System.debug('ct.CronJobDetail.Id: ' +ct.CronJobDetail.Id);
+            System.Debug([SELECT Id, CreatedDate, CompletedDate, Status, JobType FROM AsyncApexJob WHERE Id =: ct.CronJobDetail.Id]);
             return JSON.serialize(ct);
         } else return cronId;
     }
-
 
     // Batch custom settings
     @AuraEnabled (cacheable=true)
@@ -63,52 +63,5 @@ public with sharing class emailConfig {
         er.time__c = erNew.time__c;
         upsert er;
         return JSON.serialize(batch_email_report__c.getInstance(settings_name));
-    }      
-
-    // @AuraEnabled
-    // public static void setState(Boolean state){
-    //     System.debug('setState: ' + state);
-    //     batch_email_report__c er = batch_email_report__c.getInstance(settings_name);
-    //     er.state__c = state;        
-    //     upsert er;
-    //     System.debug('new state: ' + batch_email_report__c.getInstance(settings_name).state__c);
-    // }
-
-    // @AuraEnabled
-    // public static void setTime(Integer newTime){
-    //     System.debug('setTime: ' + newTime);
-    //     batch_email_report__c er = batch_email_report__c.getInstance(settings_name);
-    //     er.time__c = newTime;        
-    //     upsert er;
-    //     System.debug('new state: ' + batch_email_report__c.getInstance(settings_name).time__c);
-    // }
-
-    // @AuraEnabled (cacheable=true)
-    // public static Boolean getState(){        
-    //     email_report__c er = email_report__c.getOrgDefaults();
-    //     System.debug('getState: ' + er.state__c);
-    //     return er.state__c;
-    // }
-
-    // @AuraEnabled
-    // public static void setState(Boolean state){
-    //     System.debug('setState: ' + state);
-    //     email_report__c er = email_report__c.getOrgDefaults();
-    //     er.state__c = state;        
-    //     upsert er;
-    //     System.debug(email_report__c.getOrgDefaults().state__c);
-    // }
-
-    // @AuraEnabled (cacheable=true)
-    // public static String getTime(){        
-    //     email_report__c er = email_report__c.getOrgDefaults();
-    //     System.debug('getTime: ' + er.time__c);
-    //     return String.valueOf(er.time__c);
-    // }
-
-    // @AuraEnabled
-    // public static void setStartTime(String newTime){
-    //     System.debug('Set time to: ' + newTime);
-    // }
-   
+    }
 }
